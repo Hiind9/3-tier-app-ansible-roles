@@ -1,0 +1,28 @@
+- name: Stop and remove Docker containers
+  community.docker.docker_container:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ docker_containers }}"
+  ignore_errors: yes
+
+- name: Remove Docker images
+  community.docker.docker_image:
+    name: "{{ item }}"
+    state: absent
+  loop: "{{ docker_images }}"
+  ignore_errors: yes
+
+- name: Remove custom Docker network
+  community.docker.docker_network:
+    name: "{{ docker_network_name }}"
+    state: absent
+  ignore_errors: yes
+
+
+- name: Remove directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ folders_to_delete }}"
+
+

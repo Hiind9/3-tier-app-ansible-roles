@@ -1,0 +1,14 @@
+all:
+ children:
+   webservers:
+     hosts:
+       backend_vm:
+         ansible_host: 74.243.240.231
+         ansible_user: azureuser
+         ansible_ssh_private_key_file: "./backend_key.pem"
+         ansible_python_interpreter: /usr/bin/python3.10
+       frontend_vm:
+         ansible_host: 74.243.240.219
+         ansible_user: azureuser
+         ansible_ssh_private_key_file: "./frontend_key.pem"
+         ansible_python_interpreter: /usr/bin/python3.10
