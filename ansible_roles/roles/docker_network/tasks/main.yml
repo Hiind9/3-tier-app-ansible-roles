@@ -1,5 +1,0 @@
-- name: Create a custom Docker network
-  community.docker.docker_network:
-    name: "{{ docker_network_name }}"
-    driver: "{{ docker_network_driver }}"
-    state: present
