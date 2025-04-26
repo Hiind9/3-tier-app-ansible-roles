@@ -1,0 +1,45 @@
+---
+- name: Update apt packages
+  apt:
+    update_cache: yes
+
+- name: Install required packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+
+- name: Add Docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+    filename: docker
+
+- name: Update apt again after adding Docker repo
+  apt:
+    update_cache: yes
+
+- name: Install Docker CE
+  apt:
+    name: docker-ce
+    state: present
+
+- name: Enable and start Docker service
+  systemd:
+    name: docker
+    enabled: true
+    state: started
+
+- name: Add azureuser to docker group
+  user:
+    name: azureuser
+    groups: docker
+    append: yes
