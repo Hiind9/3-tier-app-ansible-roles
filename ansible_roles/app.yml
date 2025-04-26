@@ -7,51 +7,39 @@
           docker_containers:
             - frontendapp
             - backendapp
-            - postgres_db
 
           docker_images:
             - frontendapp
             - backendapp
-            - postgres:latest
 
           folders_to_delete:
-            - /tmp/backendapp
-            - /tmp/frontendapp
-          docker_network_name: custom_network
+            - /tmp/application
 
-    - role: docker_network
-      vars:
-          docker_network_name: custom_network
-          docker_network_driver: bridge
-        
-    - role: postgres_db
-      vars:
-          postgres_container_name: postgres_db
-          postgres_image: postgres:latest
-          postgres_password: postgres
-          postgres_user: postgres
-          postgres_db: postgresdb
-          host_port: 5432
-          container_port: 5432
-          docker_network_name: custom_network
+- hosts: frontend_vm
+  become: true
+  roles:
+    - role: install_docker
     - role: application
       vars:
-          app_name: frontendapp
-          app_image: frontendapp
-          app_container: frontendapp
-          app_src_dir: ../ui
-          app_dest_dir: /tmp/frontendapp
-          exposed_port: 80
-          container_port: 80
-          docker_network_name: custom_network
+        app_name: frontendapp
+        app_image: frontendapp
+        app_container: frontendapp
+        app_src_dir: ../ui
+        app_dest_dir: /tmp/application
+        exposed_port: 80
+        container_port: 80
 
+- hosts: frontend_vm
+  become: true
+  roles:
+    - role: install_docker
     - role: application
       vars:
-          app_name: backendapp
-          app_image: backendapp
-          app_container: backendapp
-          app_src_dir: ../api
-          app_dest_dir: /tmp/backendapp
-          exposed_port: 3000
-          container_port: 3000
-          docker_network_name: custom_network
+        app_name: frontendapp
+        app_image: frontendapp
+        app_container: frontendapp
+        app_src_dir: ../ui
+        app_dest_dir: /tmp/application
+        exposed_port: 80
+        container_port: 80
+
