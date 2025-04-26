@@ -1,24 +1,26 @@
-const { Pool } = require("pg");
-require("dotenv").config();
+const sql = require('mssql');
+require('dotenv').config();
 
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  host: process.env.DB_SERVER,
+  server: process.env.DB_SERVER,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 5432,
+  options: {
+    encrypt: true,
+    trustServerCertificate: false
+  }
 };
 
 async function connectDB() {
   try {
-    const pool = new Pool(config);
-    await pool.query("SELECT NOW()"); // Test the connection
-    console.log("Connected to PostgreSQL Database");
+    const pool = await sql.connect(config);
+    console.log('Connected to Azure SQL Database');
     return pool;
   } catch (err) {
-    console.error("Database connection failed:", err);
+    console.error('Database connection failed:', err);
     throw err;
   }
 }
 
-module.exports = { connectDB };
+module.exports = { connectDB, sql }; 
