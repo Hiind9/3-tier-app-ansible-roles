@@ -1,14 +1,15 @@
+- name: Copy app files to remote
+  ansible.builtin.synchronize:
+    src: "{{ app_src_dir }}/"
+    dest: "{{ app_dest_dir }}/"
+    recursive: yes
+
 - name: Create app directory
   ansible.builtin.file:
     path: "{{ app_dest_dir }}"
     state: directory
     mode: '0755'
-
-- name: Copy app files to remote
-  ansible.builtin.copy:
-    src: "{{ app_src_dir }}/"
-    dest: "{{ app_dest_dir }}/"
-    mode: '0644'
+    recurse: yes
 
 - name: Build Docker image
   community.docker.docker_image:
@@ -24,8 +25,6 @@
     image: "{{ app_image }}"
     state: started
     restart_policy: always
-    networks:
-      - name: "{{ docker_network_name }}"
     ports:
       - "{{ exposed_port }}:{{ container_port }}"
 
